@@ -111,9 +111,9 @@ puts "\nPlayer 2 is now #{p2_name}"
 
 
 # ----------------------------------
-#        Choose Game Piece
+#        Choose Marker
 # ----------------------------------
-puts "\nChoose the game piece (Type X or O) for #{p1_name}"
+puts "\nChoose the marker (Type X or O) for #{p1_name}"
 marker = gets.chomp
 # TEST INPUT
 p1.marker = marker.upcase
@@ -125,7 +125,7 @@ else
     other_marker = 'X'
 end
 
-puts "#{p1_name}'s game piece is #{p1.marker}, and so #{p2_name}'s game piece is #{other_marker} \n"
+puts "#{p1_name}'s marker is #{p1.marker}, and so #{p2_name}'s marker is #{other_marker} \n"
 
 
 # -------------------------------
@@ -134,7 +134,7 @@ puts "#{p1_name}'s game piece is #{p1.marker}, and so #{p2_name}'s game piece is
 puts "\n\nHere is an empty board"
 showBoard
 
-puts "\nYou place your game piece using coordinates"
+puts "\nYou place your marker using coordinates"
 puts "For example, 'A1' refers to the top left spot, 'B2' refers to the centermost spot, and 'C3' refers to the bottom right spot"
 exampleCoordinates
 showBoard
@@ -149,21 +149,21 @@ puts "\n\nAlright, let's start!"
 clearBoard
 showBoard
 
-puts "\n#{p1_name}, please type in the coordinates for where you want to place your game piece"
+puts "\n#{p1_name}, please type in the coordinates for where you want to place your marker"
 location = gets.chomp
 # TEST INPUT
 placeGamePiece(location)
 showBoard
-puts "\n#{p1_name} placed their game piece at #{location}"
+puts "\n#{p1_name} placed their marker at #{location}"
 
 puts "\nNext turn"
 
-puts "\n#{p2_name}, please type in the coordinates for where you want to place your game piece"
+puts "\n#{p2_name}, please type in the coordinates for where you want to place your marker"
 # TEST INPUT
 location = gets.chomp
 placeGamePiece(location)
 showBoard
-puts "\n#{p2_name} placed their game piece at #{location}"
+puts "\n#{p2_name} placed their marker at #{location}"
 
 
 
