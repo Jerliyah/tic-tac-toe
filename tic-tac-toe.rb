@@ -5,13 +5,8 @@
 
 # Player Object
 class Player
-    # Each player will be prompted to give a name
-    def initialize(name)
-        @name = name
-    end
-
-    # Each player will have a marker (X or O)
-    attr_accessor :marker
+    # Each player will have a name and marker (X or O)
+    attr_accessor :name, :marker
 end
 
 
@@ -37,7 +32,7 @@ end
 # Example Coordinates for instruction section
 def exampleCoordinates
     $board[0][0] = 'X'
-    $board[1][1] = 'X'
+    $board[1][1] = 'O'
     $board[2][2] = 'X'
 end
 
@@ -56,7 +51,7 @@ end
 
 
 # Place marker
-def placeMarker(location)
+def placeMarker(location, marker)
 
     # Split given string into an array
     coordinates = location.split('')
@@ -80,7 +75,39 @@ def placeMarker(location)
     end
 
     # Place marker
-    $board[latitude][longitude] = 'X'
+    $board[longitude][latitude] = marker
+
+end
+
+
+# Determine if game should end
+def end_game?
+    # if full_board? || something
+    #     return true
+
+end
+
+# Determine if board is full
+def full_board?
+    full_row = []
+
+    # Check each row
+    $board.each do |arr|
+        # Check if all items in row are full
+        full_row << arr.all? { |spot| spot != ' '}
+    end
+
+    # If each row is full, the function returns true
+    if full_row.all?
+        return true
+    else
+        return false
+    end
+end
+
+
+# Determine if the same marker has been placed in a game winning row (horizontal, vertical, or diagonal)
+def three_in_a_row?
 
 end
 
@@ -97,35 +124,38 @@ end
 #      Establish Player Names
 # ----------------------------------
 puts "What is the name for player 1?"
-p1_name = gets.chomp
+player_name = gets.chomp
 # TEST INPUT
-p1 = Player.new(p1_name)
-puts "\nPlayer 1 is now #{p1_name}"
+p1 = Player.new
+p1.name = player_name
+
+puts "\nPlayer 1 is now #{p1.name}"
 
 
 puts "\nWhat is the name for player 2?"
-p2_name = gets.chomp
+player_name = gets.chomp
 # TEST INPUT
-p2 = Player.new(p2_name)
-puts "\nPlayer 2 is now #{p2_name}"
+p2 = Player.new
+p2.name = player_name
+puts "\nPlayer 2 is now #{p2.name}"
 
 
 # ----------------------------------
 #        Choose Marker
 # ----------------------------------
-puts "\nChoose the marker (Type X or O) for #{p1_name}"
+puts "\nChoose the marker (Type X or O) for #{p1.name}"
 marker = gets.chomp
 # TEST INPUT
 p1.marker = marker.upcase
 
 # Only two options, so when the first one is chosen, that sets the second one
 if p1.marker == 'X'
-    other_marker = 'O'
+    p2.marker = 'O'
 else
-    other_marker = 'X'
+    p2.marker = 'X'
 end
 
-puts "#{p1_name}'s marker is #{p1.marker}, and so #{p2_name}'s marker is #{other_marker} \n"
+puts "#{p1.name}'s marker is #{p1.marker}, and so #{p2.name}'s marker is #{p2.marker} \n"
 
 
 # -------------------------------
@@ -149,21 +179,29 @@ puts "\n\nAlright, let's start!"
 clearBoard
 showBoard
 
-puts "\n#{p1_name}, please type in the coordinates for where you want to place your marker"
+# --------------------------
+#        Gameplay
+# --------------------------
+
+# unless end_game
+
+
+
+puts "\n#{p1.name}, please type in the coordinates for where you want to place your marker"
 location = gets.chomp
 # TEST INPUT
-placeGamePiece(location)
+placeMarker(location, p1.marker)
 showBoard
-puts "\n#{p1_name} placed their marker at #{location}"
+puts "\n#{p1.name} placed their marker at #{location}"
 
 puts "\nNext turn"
 
-puts "\n#{p2_name}, please type in the coordinates for where you want to place your marker"
+puts "\n#{p2.name}, please type in the coordinates for where you want to place your marker"
 # TEST INPUT
 location = gets.chomp
-placeGamePiece(location)
+placeMarker(location, p2.marker)
 showBoard
-puts "\n#{p2_name} placed their marker at #{location}"
+puts "\n#{p2.name} placed their marker at #{location}"
 
 
 
