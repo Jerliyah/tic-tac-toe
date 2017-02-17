@@ -10,8 +10,8 @@ class Player
         @name = name
     end
 
-    # Each player will have a game piece (X or O)
-    attr_accessor :game_piece
+    # Each player will have a marker (X or O)
+    attr_accessor :marker
 end
 
 
@@ -55,30 +55,31 @@ def clearBoard
 end
 
 
-# Place game pieces
-def placeGamePiece(location)
+# Place marker
+def placeMarker(location)
 
-    # Split string into an array
+    # Split given string into an array
     coordinates = location.split('')
 
-    # Seperate longitude and latitude
+    # Seperate latitude and longitude
     latitude = coordinates[0]
     longitude = coordinates[1]
 
-    # Convert latitude letters to numbers
+    # Convert latitude letter to number
     case latitude
         when 'A' then latitude = 0
         when 'B' then latitude = 1
         when 'C' then latitude = 2
     end
 
-    # Convert longitude numbers to index numbers
+    # Convert longitude number to index number
     case longitude
         when '1' then longitude = 0
         when '2' then longitude = 1
         when '3' then longitude = 2
     end
 
+    # Place marker
     $board[latitude][longitude] = 'X'
 
 end
@@ -113,18 +114,18 @@ puts "\nPlayer 2 is now #{p2_name}"
 #        Choose Game Piece
 # ----------------------------------
 puts "\nChoose the game piece (Type X or O) for #{p1_name}"
-game_piece = gets.chomp
+marker = gets.chomp
 # TEST INPUT
-p1.game_piece = game_piece.upcase
+p1.marker = marker.upcase
 
 # Only two options, so when the first one is chosen, that sets the second one
-if p1.game_piece == 'X'
-    other_game_piece = 'O'
+if p1.marker == 'X'
+    other_marker = 'O'
 else
-    other_game_piece = 'X'
+    other_marker = 'X'
 end
 
-puts "#{p1_name}'s game piece is #{p1.game_piece}, and so #{p2_name}'s game piece is #{other_game_piece} \n"
+puts "#{p1_name}'s game piece is #{p1.marker}, and so #{p2_name}'s game piece is #{other_marker} \n"
 
 
 # -------------------------------
