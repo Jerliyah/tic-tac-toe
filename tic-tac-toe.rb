@@ -5,9 +5,18 @@
 
 # Player Object
 class Player
-    # Each player will have a name and marker (X or O)
-    attr_accessor :name, :marker
+    # Each player will have a name, marker (X or O), and history of marker locations
+    attr_accessor :name, :marker, :marker_history
+
+    # At initalization, create personal array of marker history
+    def initialize
+        self.marker_history = []
+    end
+
+
+    # Make a master history to ensure that know one places marker over another player's
 end
+
 
 
 # Universal Board (starts empty)
@@ -18,6 +27,7 @@ $board = [
         ]
 
 
+
 # Show Stylized Board
 def showBoard
     row_1 = [' ', 'A', 'B', 'C']
@@ -26,7 +36,8 @@ def showBoard
     row_4 = [3] + $board[2]
 
     puts " | #{row_1.join(' | ')} | \n | #{row_2.join(' | ')} | \n | #{row_3.join(' | ')} | \n | #{row_4.join(' | ')} |"
-end
+end  #End of show_board
+
 
 
 # Example Coordinates for instruction section
@@ -34,7 +45,8 @@ def exampleCoordinates
     $board[0][0] = 'X'
     $board[1][1] = 'O'
     $board[2][2] = 'X'
-end
+end  #End of exampleCoordinates
+
 
 
 # Clear Board
@@ -47,18 +59,19 @@ def clearBoard
             arr[i] = ' '
         end
     end
-end
+end  #End of clearBoard
+
 
 
 # Place marker
 def placeMarker(location, marker)
 
     # Split given string into an array
-    coordinates = location.split('')
+    coordinate = location.split('')
 
     # Seperate latitude and longitude
-    latitude = coordinates[0]
-    longitude = coordinates[1]
+    latitude = coordinate[0]
+    longitude = coordinate[1]
 
     # Convert latitude letter to number
     case latitude
@@ -77,15 +90,30 @@ def placeMarker(location, marker)
     # Place marker
     $board[longitude][latitude] = marker
 
+end  #End of placeMarker
+
+
+
+# Ensure proper coordinate format
+def tested_coordinates
+    # Rescue break
+    # Return formatted coordinates (into place marker)
 end
 
 
-# Determine if game should end
-def end_game?
-    # if full_board? || something
-    #     return true
 
+# Steps for each player's turn
+def take_a_turn
+
+    # Steps
+
+    #Check for end_game
+    if end_game?
+        # Function for closing game
+    end
 end
+
+
 
 # Determine if board is full
 def full_board?
@@ -99,17 +127,100 @@ def full_board?
 
     # If each row is full, the function returns true
     if full_row.all?
-        return true
+        true
     else
-        return false
+        false
     end
-end
+end  #End of full_board?
+
 
 
 # Determine if the same marker has been placed in a game winning row (horizontal, vertical, or diagonal)
-def three_in_a_row?
+def three_in_a_row?(marker_history)
+
+    # If any of the checks are true, return true
+    if check_latitudes(marker_history) || check_longitudes(marker_history) || check_lat_long(marker_history) || check_special_diag(marker_history)
+        return true
+    # Otherwise, false
+    else
+        return false
+    end
+
+end  #End of three_in_a_row?
+
+        # ------------------------------------------------
+        #     Support three_in_a_row?
+        #     Due to lack of nesting method ability
+        # ------------------------------------------------
+         # Check for win by latitude
+            def check_latitudes(marker_history)
+                all_A = marker_history.select { |coordinate| coordinate[0] == 'A' }
+                all_B = marker_history.select { |coordinate| coordinate[0] == 'B' }
+                all_C = marker_history.select { |coordinate| coordinate[0] == 'C' }
+
+                if all_A.length == 3 || all_B.length == 3 || all_C.length == 3
+                    true
+                else
+                    false
+                end
+            end
+
+            # Check for win by longitude
+            def check_longitudes(marker_history)
+                all_1 = marker_history.select { |arr| arr[1] == '1' }
+                all_2 = marker_history.select { |arr| arr[1] == '2' }
+                all_3 = marker_history.select { |arr| arr[1] == '3' }
+
+                if all_1.length == 3 || all_2.length == 3 || all_3.length == 3
+                    true
+                else
+                    false
+                end
+            end
+
+            # Check for win by same latitude and longitude
+            def check_lat_long(marker_history)
+                if marker_history.include?('A1') && marker_history.include?('B2') && marker_history.include?('C3')
+                    true
+                else
+                    false
+                end
+            end
+
+            # Check for win by special diagonal
+            def check_special_diag(marker_history)
+                if marker_history.include?('A3') && marker_history.include?('B2') && marker_history.include?('C1')
+                    true
+                else
+                    false
+                end
+            end
+            # ------------------------------------------------
+            #     End of support three_in_a_row?
+            # ------------------------------------------------
+
+
+
+# Determine if game should end
+def end_game?
+    # Check If the board is full or a player has won
+    if full_board? || three_in_a_row?
+        true
+    else
+        false
+    end
+
+end  #End of end_game?
+
+
+
+# Close the game
+def close_game
 
 end
+
+
+
 
 
 
@@ -148,7 +259,7 @@ marker = gets.chomp
 # TEST INPUT
 p1.marker = marker.upcase
 
-# Only two options, so when the first one is chosen, that sets the second one
+# Only two options, so when player 1 marker is chosen, player 2 is set
 if p1.marker == 'X'
     p2.marker = 'O'
 else
@@ -170,8 +281,6 @@ exampleCoordinates
 showBoard
 
 
-
-
 # --------------------------
 #       Begin Game
 # --------------------------
@@ -191,6 +300,7 @@ puts "\n#{p1.name}, please type in the coordinates for where you want to place y
 location = gets.chomp
 # TEST INPUT
 placeMarker(location, p1.marker)
+p1.marker_history << location
 showBoard
 puts "\n#{p1.name} placed their marker at #{location}"
 
@@ -200,6 +310,7 @@ puts "\n#{p2.name}, please type in the coordinates for where you want to place y
 # TEST INPUT
 location = gets.chomp
 placeMarker(location, p2.marker)
+p2.marker_history << location
 showBoard
 puts "\n#{p2.name} placed their marker at #{location}"
 
