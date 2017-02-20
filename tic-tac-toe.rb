@@ -1,6 +1,6 @@
 
 # ==================================
-#             Setup
+#          Player Setup
 # ==================================
 
 # Player Object
@@ -12,12 +12,57 @@ class Player
     def initialize
         self.marker_history = []
     end
+end  #End of Player object
 
 
-    # Make a master history to ensure that know one places marker over another player's
-end
+def createPlayerNames
+    puts "\n\t\t\t============================="
+    puts "\t\t\t Create Player Names"
+    puts "\t\t\t============================="
+
+    puts "\nWhat is the name for player 1?"
+    player_name = gets.chomp
+    # TEST INPUT
+    $p1 = Player.new
+    $p1.name = player_name
+
+    puts "\nPlayer 1 is now #{$p1.name}"
 
 
+    puts "\nWhat is the name for player 2?"
+    player_name = gets.chomp
+    # TEST INPUT
+    $p2 = Player.new
+    $p2.name = player_name
+    puts "\nPlayer 2 is now #{$p2.name}"
+end  #End of createPlayerNames
+
+
+def choosePlayerMarkers
+    puts "\n\t\t\t============================="
+    puts "\t\tChoose Marker"
+    puts "\t\t\t============================="
+    puts "\nChoose the marker (Type X or O) for #{$p1.name}"
+    marker = gets.chomp
+    # TEST INPUT
+    $p1.marker = marker.upcase
+
+    # Only two options, so when player 1 marker is chosen, player 2 is set
+    if $p1.marker == 'X'
+        $p2.marker = 'O'
+    else
+        $p2.marker = 'X'
+    end
+
+    puts "#{$p1.name}'s marker is #{$p1.marker}, and so #{$p2.name}'s marker is #{$p2.marker} \n"
+end  #End of choosePlayerMarkers
+
+
+
+
+# ==================================
+#            Game Board
+# ==================================
 
 # Universal Board (starts empty)
 $board = [
@@ -25,7 +70,6 @@ $board = [
             [' ', ' ', ' '],
             [' ', ' ', ' ']
         ]
-
 
 
 # Show Stylized Board
@@ -39,14 +83,12 @@ def showBoard
 end  #End of show_board
 
 
-
 # Example Coordinates for instruction section
 def exampleCoordinates
     $board[0][0] = 'X'
     $board[1][1] = 'O'
     $board[2][2] = 'X'
 end  #End of exampleCoordinates
-
 
 
 # Clear Board
@@ -63,7 +105,31 @@ end  #End of clearBoard
 
 
 
-# Place marker
+# ==================================
+#             Gameplay
+# ==================================
+
+def welcome
+    puts "\n\t\t\t============================="
+    puts "\t\t\t Welcome to Jerliyah's Tic Tac Toe Game"
+    puts "\t\t\t============================="
+end  #End of welcome
+
+
+def instructions
+    puts "\n\t\t\t============================="
+    puts "\t\t\t Instructions"
+    puts "\t\t\t============================="
+    puts "\n\nHere is an empty board"
+    showBoard
+
+    puts "\nYou place your marker using coordinates"
+    puts "For example, 'A1' refers to the top left spot, 'B2' refers to the centermost spot, and 'C3' refers to the bottom right spot"
+    exampleCoordinates
+    showBoard
+end  #End of instructions
+
+
 def placeMarker(location, marker)
 
     # Split given string into an array
@@ -93,26 +159,83 @@ def placeMarker(location, marker)
 end  #End of placeMarker
 
 
+def beginGame
+    puts "\n\t\t\t============================="
+    puts "\t\t Game"
+    puts "\t\t\t============================="
+    puts "\nAlright, let's start!"
+    clearBoard
+    showBoard
+end  #End of beginGame
+
+
+# Steps for each player's turn
+def take_a_turn(player)
+
+    puts "\n#{player.name}, please type in the coordinates for where you want to place your marker"
+
+    location = gets.chomp
+    # TEST INPUT
+    placeMarker(location, player.marker)
+    player.marker_history << location
+    showBoard
+    puts "\n#{player.name} placed their marker at #{location}"
+
+    between_turns(player)
+end  #End of take_a_turn
+
+
+# What occurs between each turn
+def between_turns(player)
+
+    # Check if the game should be ended
+    if end_game?(player)
+        close_game(player)
+    else
+        puts "\n\nNext turn"
+
+        # Change the current player
+        if player == $p1
+            take_a_turn($p2)
+        else
+            take_a_turn($p1)
+        end
+
+    end  #End of if if end_game?
+end  #End of between_players
+
+
+# Close the game
+def close_game(player)
+    puts "\n\t\t\t============================="
+    puts "\t\t\t #{player.name} has won!"
+    puts "\t\t\t============================="
+
+    puts "\n Would you like to play again? \n Y/N"
+    replay = gets.chomp
+    replay.upcase!
+
+    if replay == 'Y'
+        welcome
+    else
+        puts "\n\t\t\t============================="
+        puts "\t\t\t Thanks for playing!"
+        puts "\t\t\t============================="
+    end
+
+end  #End of close_game
+
+
+
+# ==================================
+#           In-Game Tests
+# ==================================
 
 # Ensure proper coordinate format
 def tested_coordinates
     # Rescue break
     # Return formatted coordinates (into place marker)
-end
-
-
-
-# Steps for each player's turn
-def take_a_turn
-
-    # Steps
-
-    #Check for end_game
-    if end_game?
-        # Function for closing game
-    end
-end
-
+end  #End of test_coordinates
 
 
 # Determine if board is full
@@ -132,7 +255,6 @@ def full_board?
         false
     end
 end  #End of full_board?
-
 
 
 # Determine if the same marker has been placed in a game winning row (horizontal, vertical, or diagonal)
@@ -202,9 +324,10 @@ end  #End of three_in_a_row?
 
 
 # Determine if game should end
-def end_game?
-    # Check If the board is full or a player has won
-    if full_board? || three_in_a_row?
+def end_game?(player)
+
+    # Check If the board is full or current player has won
+    if full_board? || three_in_a_row?(player.marker_history)
         true
     else
         false
@@ -214,12 +337,6 @@ end  #End of end_game?
 
 
 
-# Close the game
-def close_game
-
-end
-
-
 
 
 
@@ -227,100 +344,17 @@ end
 
 
 # ----------------------------------
-#             Welcome
+#             Procedure
 # ----------------------------------
+# Done
+welcome
 
+createPlayerNames
+choosePlayerMarkers
 
-# ----------------------------------
-#      Establish Player Names
-# ----------------------------------
-puts "What is the name for player 1?"
-player_name = gets.chomp
-# TEST INPUT
-p1 = Player.new
-p1.name = player_name
+instructions
 
-puts "\nPlayer 1 is now #{p1.name}"
+beginGame
 
-
-puts "\nWhat is the name for player 2?"
-player_name = gets.chomp
-# TEST INPUT
-p2 = Player.new
-p2.name = player_name
-puts "\nPlayer 2 is now #{p2.name}"
-
-
-# ----------------------------------
-#        Choose Marker
-# ----------------------------------
-puts "\nChoose the marker (Type X or O) for #{p1.name}"
-marker = gets.chomp
-# TEST INPUT
-p1.marker = marker.upcase
-
-# Only two options, so when player 1 marker is chosen, player 2 is set
-if p1.marker == 'X'
-    p2.marker = 'O'
-else
-    p2.marker = 'X'
-end
-
-puts "#{p1.name}'s marker is #{p1.marker}, and so #{p2.name}'s marker is #{p2.marker} \n"
-
-
-# -------------------------------
-#          Instructions
-# ------------------------------
-puts "\n\nHere is an empty board"
-showBoard
-
-puts "\nYou place your marker using coordinates"
-puts "For example, 'A1' refers to the top left spot, 'B2' refers to the centermost spot, and 'C3' refers to the bottom right spot"
-exampleCoordinates
-showBoard
-
-
-# --------------------------
-#       Begin Game
-# --------------------------
-puts "\n\nAlright, let's start!"
-clearBoard
-showBoard
-
-# --------------------------
-#        Gameplay
-# --------------------------
-
-# unless end_game
-
-
-
-puts "\n#{p1.name}, please type in the coordinates for where you want to place your marker"
-location = gets.chomp
-# TEST INPUT
-placeMarker(location, p1.marker)
-p1.marker_history << location
-showBoard
-puts "\n#{p1.name} placed their marker at #{location}"
-
-puts "\nNext turn"
-
-puts "\n#{p2.name}, please type in the coordinates for where you want to place your marker"
-# TEST INPUT
-location = gets.chomp
-placeMarker(location, p2.marker)
-p2.marker_history << location
-showBoard
-puts "\n#{p2.name} placed their marker at #{location}"
-
-
-
-
-# ==================================
-#             Game
-# ==================================
-
-# A list of each function after I refactor the above parts in setup, currently runs procedurely
-
-puts "All done"
+# Start with p1, the toggle is built into the functions
+take_a_turn($p1)
