@@ -15,7 +15,7 @@ class Player
 end  #End of Player object
 
 
-def createPlayerNames
+def create_player_names
     puts "\n"
     puts "\t\t\t============================="
     puts "\t\t\t     Create Player Names"
@@ -23,30 +23,29 @@ def createPlayerNames
 
     puts "\nWhat is the name for player 1?"
     player_name = gets.chomp
-    # TEST INPUT
+    player_name = tested_input(player_name, 'create_player_names')
     $p1 = Player.new
     $p1.name = player_name
-
     puts "\nPlayer 1 is now #{$p1.name}"
-
 
     puts "\nWhat is the name for player 2?"
     player_name = gets.chomp
-    # TEST INPUT
+    player_name = tested_input(player_name, 'create_player_names')
     $p2 = Player.new
     $p2.name = player_name
     puts "\nPlayer 2 is now #{$p2.name}"
-end  #End of createPlayerNames
+end  #End of create_player_names
 
 
-def choosePlayerMarkers
+def choose_player_markers
     puts "\n"
     puts "\t\t\t============================="
     puts "\t\t\t        Choose Marker"
     puts "\t\t\t============================="
     puts "\nChoose the marker (Type X or O) for #{$p1.name}"
+
     marker = gets.chomp
-    # TEST INPUT
+    marker = tested_input(marker, 'choose_player_marks')
     $p1.marker = marker.upcase
 
     # Only two options, so when player 1 marker is chosen, player 2 is set
@@ -57,7 +56,7 @@ def choosePlayerMarkers
     end
 
     puts "#{$p1.name}'s marker is #{$p1.marker}, and so #{$p2.name}'s marker is #{$p2.marker} \n"
-end  #End of choosePlayerMarkers
+end  #End of choose_player_markers
 
 
 
@@ -75,7 +74,7 @@ $board = [
 
 
 # Show Stylized Board
-def showBoard
+def show_board
     row_1 = [' ', 'A', 'B', 'C']
     row_2 = [1] + $board[0]
     row_3 = [2] + $board[1]
@@ -94,7 +93,7 @@ end  #End of exampleCoordinates
 
 
 # Clear Board
-def clearBoard
+def clear_board
     # For each row in board....
     $board.each do |arr|
         # For each item in the current row...
@@ -103,7 +102,7 @@ def clearBoard
             arr[i] = ' '
         end
     end
-end  #End of clearBoard
+end  #End of clear_board
 
 
 
@@ -125,16 +124,16 @@ def instructions
     puts "\t\t\t        Instructions"
     puts "\t\t\t============================="
     puts "\n\nHere is an empty board"
-    showBoard
+    show_board
 
     puts "\nYou place your marker using coordinates"
     puts "For example, 'A1' refers to the top left spot, 'B2' refers to the centermost spot, and 'C3' refers to the bottom right spot"
     exampleCoordinates
-    showBoard
+    show_board
 end  #End of instructions
 
 
-def placeMarker(location, marker)
+def place_marker(location, marker)
 
     # Split given string into an array
     coordinate = location.split('')
@@ -160,7 +159,7 @@ def placeMarker(location, marker)
     # Place marker
     $board[longitude][latitude] = marker
 
-end  #End of placeMarker
+end  #End of place_marker
 
 
 def beginGame
@@ -169,8 +168,8 @@ def beginGame
     puts "\t\t\t             Game"
     puts "\t\t\t============================="
     puts "\nAlright, let's start!"
-    clearBoard
-    showBoard
+    clear_board
+    show_board
 end  #End of beginGame
 
 
@@ -180,10 +179,12 @@ def take_a_turn(player)
     puts "\n#{player.name}, please type in the coordinates for where you want to place your marker"
 
     location = gets.chomp
-    # TEST INPUT
-    placeMarker(location, player.marker)
+    location = tested_input(location, 'take_a_turn')
+    place_marker(location, player.marker)
+
     player.marker_history << location
-    showBoard
+
+    show_board
     puts "\n#{player.name} placed their marker at #{location}"
 
     between_turns(player)
@@ -219,7 +220,7 @@ def close_game(player)
 
     puts "\n Would you like to play again? \n Y/N"
     replay = gets.chomp
-    replay.upcase!
+    replay = tested_input(replay, 'close_game')
 
     if replay == 'Y'
         welcome
@@ -239,10 +240,67 @@ end  #End of close_game
 # ==================================
 
 # Ensure proper coordinate format
-def tested_coordinates
-    # Rescue break
-    # Return formatted coordinates (into place marker)
+def tested_input(input, section)
+
+    case section
+    when 'create_player_names'
+
+        if input.length > 20
+            puts "Sorry, your name can't be more than 20 characters"
+            redo_input(input)
+        else
+            input
+        end
+
+
+    when 'choose_player_marks'
+        input.upcase!
+
+        if input == 'X' || input == 'O'
+            input
+        else
+            puts "\nThat's not a valid marker. Please type the letter X or O"
+            redo_input(input,section)
+        end
+
+
+    when 'take_a_turn'
+        arr = input.split("")
+
+        arr[0].upcase!
+
+        if arr.length == 2  &&  'ABC'.include?(arr[0])  &&  '123'.include?(arr[1])
+            input
+        else
+            puts "\nThat's not a valid coordinate. Please type the letter corresponding to column, followed by the number corresponding to row. For example, A3"
+            redo_input(input,section)
+        end
+
+
+    when 'close_game'
+        input.upcase
+
+        if input == 'Y' || input == 'N'
+            input
+        else
+            puts "\nThat's not a valid answer. Please type the letter y or n"
+            redo_input(input,section)
+        end
+
+    end  #End of case
+
 end  #End of test_coordinates
+        # ------------------------------------------------
+        #     test_coordinates support
+        #     Due to lack of nesting method ability
+        # ------------------------------------------------
+            def redo_input(input,section)
+                input = gets.chomp
+                tested_input(input,section)
+            end
+        # ------------------------------------------------
+        #     End of test_coordinates support
+        # ------------------------------------------------
 
 
 # Determine if board is full
@@ -278,7 +336,7 @@ def three_in_a_row?(marker_history)
 end  #End of three_in_a_row?
 
         # ------------------------------------------------
-        #     Support three_in_a_row?
+        #     three_in_a_row? support
         #     Due to lack of nesting method ability
         # ------------------------------------------------
          # Check for win by latitude
@@ -325,7 +383,7 @@ end  #End of three_in_a_row?
                 end
             end
             # ------------------------------------------------
-            #     End of support three_in_a_row?
+            #     End of three_in_a_row? support
             # ------------------------------------------------
 
 
@@ -344,24 +402,23 @@ end  #End of end_game?
 
 
 
-
-
-
-
-
-
-# ----------------------------------
+# ==================================
 #             Procedure
-# ----------------------------------
-# Done
-welcome
+# ==================================
+def tic_tac_toe
+    welcome
 
-createPlayerNames
-choosePlayerMarkers
+    create_player_names
+    choose_player_markers
 
-instructions
+    instructions
 
-beginGame
+    beginGame
 
-# Start with p1, the toggle is built into the functions
-take_a_turn($p1)
+    # Start with p1, the toggle is built into the functions
+    take_a_turn($p1)
+
+    # End game is determined within functions
+end
+
+tic_tac_toe
