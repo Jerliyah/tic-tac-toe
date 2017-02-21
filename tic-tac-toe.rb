@@ -195,8 +195,12 @@ end  #End of take_a_turn
 def between_turns(player)
 
     # Check if the game should be ended
-    if end_game?(player)
+    if end_game?(player) == "full_board"
+        close_game(player, "full_board")
+
+    elsif end_game?(player) == "three_in_a_row"
         close_game(player)
+
     else
         puts "\n\nNext turn"
 
@@ -212,11 +216,19 @@ end  #End of between_players
 
 
 # Close the game
-def close_game(player)
-    puts "\n"
-    puts "\t\t\t============================="
-    puts "\t\t\t      #{player.name} has won!"
-    puts "\t\t\t============================="
+def close_game(player, circumstance=nil)
+
+    if circumstance
+        puts "\n"
+        puts "\t\t\t============================="
+        puts "\t\t\t         It's a tie!"
+        puts "\t\t\t============================="
+    else
+        puts "\n"
+        puts "\t\t\t============================="
+        puts "\t\t\t      #{player.name} has won!"
+        puts "\t\t\t============================="
+    end
 
     puts "\n Would you like to play again? \n Y/N"
     replay = gets.chomp
@@ -392,8 +404,10 @@ end  #End of three_in_a_row?
 def end_game?(player)
 
     # Check If the board is full or current player has won
-    if full_board? || three_in_a_row?(player.marker_history)
-        true
+    if three_in_a_row?(player.marker_history)
+        "three_in_a_row"
+    elsif full_board?
+        "full_board"
     else
         false
     end

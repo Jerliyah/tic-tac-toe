@@ -1,7 +1,7 @@
 
 
 # Test: Tie
-echo "Jerliyah\nVexcra\nX\n..." | ruby tic-tac-toe.rb
+echo "Jerliyah\nVexcra\nX\nA1\nB1\nC1\nA2\nC2\nB2\nB3\nC3\nA3\nN" | ruby tic-tac-toe.rb
 
 
 # NOTES:
