@@ -16,8 +16,9 @@ end  #End of Player object
 
 
 def createPlayerNames
-    puts "\n\t\t\t============================="
-    puts "\t\t\t Create Player Names"
+    puts "\n"
+    puts "\t\t\t============================="
+    puts "\t\t\t     Create Player Names"
     puts "\t\t\t============================="
 
     puts "\nWhat is the name for player 1?"
@@ -39,8 +40,9 @@ end  #End of createPlayerNames
 
 
 def choosePlayerMarkers
-    puts "\n\t\t\t============================="
-    puts "\t\tChoose Marker"
+    puts "\n"
+    puts "\t\t\t============================="
+    puts "\t\t\t        Choose Marker"
     puts "\t\t\t============================="
     puts "\nChoose the marker (Type X or O) for #{$p1.name}"
     marker = gets.chomp
@@ -110,15 +112,17 @@ end  #End of clearBoard
 # ==================================
 
 def welcome
-    puts "\n\t\t\t============================="
-    puts "\t\t\t Welcome to Jerliyah's Tic Tac Toe Game"
+    puts "\n"
+    puts "\t\t\t============================="
+    puts "\t\t    Welcome to Jerliyah's Tic Tac Toe Game"
     puts "\t\t\t============================="
 end  #End of welcome
 
 
 def instructions
-    puts "\n\t\t\t============================="
-    puts "\t\t\t Instructions"
+    puts "\n"
+    puts "\t\t\t============================="
+    puts "\t\t\t        Instructions"
     puts "\t\t\t============================="
     puts "\n\nHere is an empty board"
     showBoard
@@ -160,8 +164,9 @@ end  #End of placeMarker
 
 
 def beginGame
-    puts "\n\t\t\t============================="
-    puts "\t\t Game"
+    puts "\n"
+    puts "\t\t\t============================="
+    puts "\t\t\t             Game"
     puts "\t\t\t============================="
     puts "\nAlright, let's start!"
     clearBoard
@@ -207,8 +212,9 @@ end  #End of between_players
 
 # Close the game
 def close_game(player)
-    puts "\n\t\t\t============================="
-    puts "\t\t\t #{player.name} has won!"
+    puts "\n"
+    puts "\t\t\t============================="
+    puts "\t\t\t      #{player.name} has won!"
     puts "\t\t\t============================="
 
     puts "\n Would you like to play again? \n Y/N"
@@ -218,8 +224,9 @@ def close_game(player)
     if replay == 'Y'
         welcome
     else
-        puts "\n\t\t\t============================="
-        puts "\t\t\t Thanks for playing!"
+        puts "\n"
+        puts "\t\t\t============================="
+        puts "\t\t\t     Thanks for playing!"
         puts "\t\t\t============================="
     end
 
