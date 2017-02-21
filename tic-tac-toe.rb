@@ -12,6 +12,13 @@ class Player
     def initialize
         self.marker_history = []
     end
+
+    # Master history to ensure no one marks the same place
+    @@master_marker_history = []
+
+    def add_to_master_history(location)
+        @@master_marker_history << location
+    end
 end  #End of Player object
 
 
@@ -134,9 +141,9 @@ end  #End of instructions
 
 
 def place_marker(location, marker)
-
     # Split given string into an array
-    coordinate = location.split('')
+    coordinate = location.split("")
+
 
     # Seperate latitude and longitude
     latitude = coordinate[0]
@@ -183,6 +190,7 @@ def take_a_turn(player)
     place_marker(location, player.marker)
 
     player.marker_history << location
+    player.add_to_master_history(location)
 
     show_board
     puts "\n#{player.name} placed their marker at #{location}"
@@ -282,11 +290,19 @@ def tested_input(input, section)
         arr[0].upcase!
 
         if arr.length == 2  &&  'ABC'.include?(arr[0])  &&  '123'.include?(arr[1])
-            input
+            # Players can't mark over a spot that already has one
+            if Player.class_variable_get(:@@master_marker_history).include? input
+                puts "\nThat spot is already marked, please choose a different location"
+                redo_input(input,section)
+            else
+                input
+            end
         else
             puts "\nThat's not a valid coordinate. Please type the letter corresponding to column, followed by the number corresponding to row. For example, A3"
             redo_input(input,section)
         end
+
+
 
 
     when 'close_game'
